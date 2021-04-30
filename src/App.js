@@ -1,67 +1,61 @@
-import './App.css';
-import axios from 'axios';
-import ProfileList from './Components/Profile/ProfileList';
-import { useState, useEffect } from 'react';
+import "./App.css";
+import axios from "axios";
+import ProfileList from "./Components/Profile/ProfileList";
+import { useState, useEffect } from "react";
 
 function App() {
   const [profiles, setProfiles] = useState([]);
-  const [sortType, setSortType] = useState('Unsorted');
-  
-  const url = 'http://localhost:4000/profiles';
+  const [sortType, setSortType] = useState("Unsorted");
+
+  const url = "http://localhost:4000/profiles";
 
   const getProfiles = async () => {
-    axios.get(url)
-      .then(response => setProfiles(response.data))
-      .catch(error => console.error(`Error: ${error}`));
-  }
+    axios
+      .get(url)
+      .then((response) => setProfiles(response.data))
+      .catch((error) => console.error(`Error: ${error}`));
+  };
 
   useEffect(() => {
     getProfiles();
   }, []);
 
-  const alphaSort = () => {
+  const alphaSort = (sortType) => {
     if (sortType === "Unsorted") {
       getProfiles();
     }
     if (sortType === "A - Z") {
-      profiles.sort(function(a,b) {
-        if (a.name < b.name
-        ) return 1;
-        if (a.name > b.name
-        ) return -1;
-        return 0
+      profiles.sort(function (a, b) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
       });
+      setProfiles([...profiles]);
     }
     if (sortType === "Z - A") {
-      profiles.sort(function(a,b) {
-        if (a.name < b.name
-        ) return -1;
-        if (a.name > b.name
-        ) return 1;
-        return 0
+      profiles.sort(function (a, b) {
+        if (a.name < b.name) return 1;
+        if (a.name > b.name) return -1;
+        return 0;
       });
-      
-    } 
-  }
+      setProfiles([...profiles]);
+    }
+  };
 
   useEffect(() => {
-    alphaSort();
+    alphaSort(sortType);
   }, [sortType]);
-  
 
   return (
     <div className="App">
-      <ProfileList profiles={profiles}/>
+      <ProfileList profiles={profiles} />
       <select onChange={(e) => setSortType(e.target.value)}>
-            <option>Unsorted</option>
-            <option>A - Z</option>
-            <option>Z - A</option>
+        <option>Unsorted</option>
+        <option>A - Z</option>
+        <option>Z - A</option>
       </select>
     </div>
   );
-
-  
 }
-
 
 export default App;
